@@ -10,3 +10,4 @@ camelot-py>=0.11.0
 opencv-python>=4.8.0.76
 python-dotenv>=1.0.0
 tiktoken>=0.5.2
+pymupdf4llm>=0.0.17
