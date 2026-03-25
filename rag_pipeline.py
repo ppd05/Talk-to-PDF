@@ -21,7 +21,7 @@ def get_rag_chain():
 
     # Initialize Gemini model (Using the model ID provided in requirements)
     llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash-lite", # Fallback/closest valid API model name if gemini-flash-lite-25 fails
+        model="gemini-3.1-flash-lite-preview", # Fallback/closest valid API model name if gemini-flash-lite-25 fails
         temperature=0,
     )
 
