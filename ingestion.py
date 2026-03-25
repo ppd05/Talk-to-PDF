@@ -74,9 +74,13 @@ def extract_pdf_content(pdf_path):
 
 
 def get_text_splitter():
-    return MarkdownTextSplitter(
-        chunk_size=1500,
-        chunk_overlap=250
+    # We switch back to regular RecursiveCharacterTextSplitter with larger limits.
+    # MarkdownTextSplitter gets deeply confused by Python/SQL backticks internally, arbitrarily slicing code!
+    from langchain_text_splitters import RecursiveCharacterTextSplitter
+    return RecursiveCharacterTextSplitter(
+        chunk_size=3000, 
+        chunk_overlap=300,
+        separators=["\n\n", "\n", " ", ""]
     )
 
 
