@@ -13,6 +13,13 @@ def extract_pdf_content(pdf_path):
     # to_markdown automatically reads the pdf and outputs strict markdown 
     # capturing tables natively, wrapping code/structure correctly, and mapping hyperlinks.
     md_text = pymupdf4llm.to_markdown(pdf_path)
+    
+    # Fix fragmented URLs natively before chunking! 
+    # If a URL is broken across multiple lines like `https://github...\n...`, this regex stitches them back.
+    import re
+    md_text = re.sub(r'(https?://[^\s>]+)\n([^\s>]+)', r'\1\2', md_text)
+    md_text = re.sub(r'(https?://[^\s>]+)\n([^\s>]+)', r'\1\2', md_text) # Run twice for double line breaks
+
     file_name = os.path.basename(pdf_path)
     
     return [Document(page_content=md_text, metadata={"source": file_name})]
