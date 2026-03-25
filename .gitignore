@@ -1,0 +1,8 @@
+.env
+__pycache__/
+*.pyc
+data/vector_db/
+data/raw_pdfs/
+*.log
+venv/
+.streamlit/
