@@ -26,7 +26,9 @@ def get_rag_chain():
     )
 
     template = """Answer ONLY from context. If not found, say 'Not in document'.
-    If the context contains a table or code block, preserve its formatting.
+    If the context contains a table, you MUST extract and output it as a proper Markdown table (using `|` columns and `---` header separators). 
+    Do NOT flatten tables into plain text sentences.
+    If the context contains a code block, preserve its formatting exactly using triple backticks.
     If the context contains a link, return it as a clickable markdown link.
 
     Context:
