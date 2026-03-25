@@ -11,14 +11,27 @@ def extract_pdf_content(pdf_path):
     Returns a list containing a single Document with the entire markdown.
     """
     # to_markdown automatically reads the pdf and outputs strict markdown 
-    # capturing tables natively, wrapping code/structure correctly, and mapping hyperlinks.
     md_text = pymupdf4llm.to_markdown(pdf_path)
     
     # Fix fragmented URLs natively before chunking! 
-    # If a URL is broken across multiple lines like `https://github...\n...`, this regex stitches them back.
     import re
     md_text = re.sub(r'(https?://[^\s>]+)\n([^\s>]+)', r'\1\2', md_text)
-    md_text = re.sub(r'(https?://[^\s>]+)\n([^\s>]+)', r'\1\2', md_text) # Run twice for double line breaks
+    md_text = re.sub(r'(https?://[^\s>]+)\n([^\s>]+)', r'\1\2', md_text)
+    
+    # NEW FIX: Brute-force extract EVERY embedded clickable hyperlink directly from the PDF's internal syntax
+    # Since some visible text differs from the actual clickable link, this grabs the hidden URLs natively!
+    import fitz
+    doc = fitz.open(pdf_path)
+    extracted_urls = set()
+    for page in doc:
+        for link in page.get_links():
+            if 'uri' in link:
+                extracted_urls.add(link['uri'])
+                
+    if extracted_urls:
+        md_text += "\n\n### Embedded Clickable Document Links (Raw Annotations)\n"
+        for url in extracted_urls:
+            md_text += f"- [{url}]({url})\n"
 
     file_name = os.path.basename(pdf_path)
     
